@@ -1,0 +1,61 @@
+zabbix_export:
+  version: '6.0'
+  date: '2022-08-17T07:35:27Z'
+  groups:
+    -
+      uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+  templates:
+    -
+      uuid: cc5b06d56bad443aa367f756f8f668f1
+      template: 'Health Checks'
+      name: 'Health Checks'
+      groups:
+        -
+          name: Templates
+      items:
+        -
+          uuid: 321221d85e6145bcb124c923fa6b74b3
+          name: 'Health Check'
+          type: TRAP
+          key: health.check
+          delay: '0'
+          history: 1d
+          trends: '0'
+          triggers:
+            -
+              uuid: 809cfef6865f47f7bffd0dc760fae604
+              expression: |
+                last(/Health Checks/health.check)=0
+                or
+                nodata(/Health Checks/health.check,5m)=1
+              name: 'Something is wrong with {$SERVICE_NAME}!'
+              priority: HIGH
+              manual_close: 'YES'
+              dependencies:
+                -
+                  name: 'Something is wrong with {$SERVICE_NAME}!'
+                  expression: 'nodata(/Health Checks/health.check,10m)=1'
+            -
+              uuid: 91eec6bf81bb4b7388fa9646a4bf5727
+              expression: 'nodata(/Health Checks/health.check,3m)=1'
+              name: 'Something is wrong with {$SERVICE_NAME}!'
+              priority: AVERAGE
+              manual_close: 'YES'
+              dependencies:
+                -
+                  name: 'Something is wrong with {$SERVICE_NAME}!'
+                  expression: |
+                    last(/Health Checks/health.check)=0
+                    or
+                    nodata(/Health Checks/health.check,5m)=1
+            -
+              uuid: 3e68d8a92d4c457a9d1cd02e28d7610f
+              expression: 'nodata(/Health Checks/health.check,10m)=1'
+              name: 'Something is wrong with {$SERVICE_NAME}!'
+              priority: DISASTER
+              manual_close: 'YES'
+      macros:
+        -
+          macro: '{$SERVICE_NAME}'
+          value: 'Example Service'
