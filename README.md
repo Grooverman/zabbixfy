@@ -35,3 +35,4 @@ Execute:
 ```
 sudo systemctl reload nginx
 ```
+Now the Zabbixfy API should be available at your Zabbix Frontend and you should be able to receive monitoring data from any HTTP client. 
